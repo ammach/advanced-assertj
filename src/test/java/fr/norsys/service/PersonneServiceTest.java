@@ -1,36 +1,44 @@
 package fr.norsys.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
+import fr.norsys.domain.Personne;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.norsys.domain.Personne;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PersonneServiceTest {
 
 	private PersonneService personneService;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.personneService = new PersonneService();
 	}
 
 	@Test
 	public void should_get_personnes() {
-		final List<Personne> personnes = this.personneService.getPersonnes();
+		List<Personne> personnes = this.personneService.getPersonnes();
+
 		assertThat(personnes).isNotEmpty().hasSize(2);
 
-		assertThat(personnes).extracting("nom").containsExactly("ammach", "anais").doesNotContain("real");
-		assertThat(personnes).extracting("nom", "prenom").contains(new Tuple("ammach", "medamine"));
+		assertThat(personnes).extracting(Personne::getNom)
+                             .containsExactly("ammach", "anais")
+                             .doesNotContain("real");
 
-		assertThat(personnes).filteredOn("nom", "ammach").hasSize(1);
-		assertThat(personnes).filteredOn(p -> p.nom.startsWith("a")).hasSize(2);
+		assertThat(personnes).extracting(Personne::getNom, Personne::getPrenom)
+                             .contains(new Tuple("ammach", "medamine"));
 
-		assertThat(personnes).flatExtracting("voitures").contains("ferrari");
+		assertThat(personnes).filteredOn("nom", "ammach")
+                             .hasSize(1);
+
+		assertThat(personnes).filteredOn(p -> p.getNom().startsWith("a"))
+                             .hasSize(2);
+
+		assertThat(personnes).flatExtracting(Personne::getVoitures)
+                             .contains("ferrari");
 	}
 
 	@Test

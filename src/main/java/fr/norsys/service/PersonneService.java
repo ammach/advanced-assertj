@@ -1,20 +1,17 @@
 package fr.norsys.service;
 
-import java.util.Arrays;
+import fr.norsys.domain.Personne;
+
 import java.util.List;
 
-import fr.norsys.domain.Personne;
+import static java.util.Arrays.asList;
 
 public class PersonneService {
 
-	public PersonneService() {
-	}
-
 	public List<Personne> getPersonnes() {
-		final Personne personne1 = new Personne(55L, "ammach", "medamine");
-		personne1.voitures = Arrays.asList("ferrari");
-		final Personne personne2 = new Personne(100L, "anais", "marie");
-		return Arrays.asList(personne1, personne2);
+		Personne ammach = new Personne(55L, "ammach", "medamine", asList("ferrari"));
+		Personne anais = new Personne(100L, "anais", "marie");
+		return asList(ammach, anais);
 	}
 
 	public Personne createPersonne() {
