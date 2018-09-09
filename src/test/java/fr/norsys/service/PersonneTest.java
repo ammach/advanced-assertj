@@ -1,27 +1,25 @@
 package fr.norsys.service;
 
 import fr.norsys.domain.Personne;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PersonneServiceTest {
+@RunWith(JUnitParamsRunner.class)
+public class PersonneTest {
 
-	private PersonneService personneService;
-
-	@Before
-	public void setUp() {
-		this.personneService = new PersonneService();
-	}
 
 	@Test
-	public void should_get_personnes() {
-		List<Personne> personnes = this.personneService.getPersonnes();
-
+	@Parameters
+	public void should_get_personnes(List<Personne> personnes) {
 		assertThat(personnes).isNotEmpty().hasSize(2);
 
 		assertThat(personnes).extracting(Personne::getNom)
@@ -41,11 +39,26 @@ public class PersonneServiceTest {
                              .contains("ferrari");
 	}
 
+	private Object[] parametersForShould_get_personnes() {
+		return new Object[]{
+				new Object[]{asList(
+						new Personne(55L, "ammach", "medamine", asList("ferrari")),
+						new Personne(100L, "anais", "marie")
+				)}
+		};
+	}
+
 	@Test
-	public void should_create_personne() {
-		final Personne personne = this.personneService.createPersonne();
+	@Parameters
+	public void should_create_personne(Personne personne) {
 		// hash and equals is on fields; id/nom/prenom
-		assertThat(personne).isEqualToComparingOnlyGivenFields(new Personne(100L, "ammach"));
+		assertThat(personne).isEqualToIgnoringNullFields(new Personne(100L, "ammach"));
+	}
+
+	private Object[] parametersForShould_create_personne() {
+		return new Object[]{
+				new Object[]{new Personne(100L, "ammach", "medamine")}
+		};
 	}
 
 }
